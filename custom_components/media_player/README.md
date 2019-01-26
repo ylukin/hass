@@ -34,17 +34,16 @@ media_player:
   <dd>description: The IP addres of the Global Cache IP2SL gateway device to which the Nuvo amplifier is connected to.</dd> 
   <dd>required: true</dd>
   <dd>type: string</dd>
-</dl>
-port:
-  description: The TCP port on the Global Cache IP2SL gateway to send serial commands to. Since the IP2SL only has one serial port, the only valid option here is 4999. 
-  required: true
-  type: string
-zones:
-  description: This is the list of zones available. Valid zones are 1, 2, 3, 4, 5 or 6. Each zone must have a name assigned to it.
-  required: true
-  type: integer
-sources:
-  description: The list of sources available. Valid source numbers are 1, 2, 3, 4, 5 or 6. Each source number corresponds to the input number on the Nuvo amplifier. Similar to zones, each source must have a name assigned to it.
-  required: true
-  type: integer
+  <dt>port:</dt>
+  <dd>description: The TCP port on the Global Cache IP2SL gateway to send serial commands to. Since the IP2SL only has one serial port, the only valid option here is 4999. </dd>
+  <dd>required: true</dd>
+  <dd>type: string</dd>
+  <dt>zones:</dt>
+  <dd>description: This is the list of zones available. Valid zones are 1, 2, 3, 4, 5 or 6. Each zone must have a name assigned to it.</dd>
+  <dd>required: true</dd>
+  <dd>type: integer</dd>
+  <dt>sources:</dt>
+  <dd>description: The list of sources available. Valid source numbers are 1, 2, 3, 4, 5 or 6. Each source number corresponds to the input number on the Nuvo amplifier. Similar to zones, each source must have a name assigned to it.</dd>
+  <dd>required: true</dd>
+  <dd>type: integer</dd>
 
