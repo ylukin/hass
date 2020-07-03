@@ -31,7 +31,7 @@ media_player:
 
 <dl>	
   <dt>host:</dt>
-  <dd>description: The IP addres of the Global Cache IP2SL gateway device to which the Nuvo amplifier is connected to.</dd> 
+  <dd>description: The IP address of the Global Cache IP2SL gateway device to which the Nuvo amplifier is connected to.</dd> 
   <dd>required: true</dd>
   <dd>type: string</dd>
   <dt>port:</dt>

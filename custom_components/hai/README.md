@@ -1,7 +1,7 @@
 
 The `hai` platform allows you to control [HAI (Leviton) Omni home automation system](https://www.leviton.com/en/products/20a00-2) via [hai-proxy](https://github.com/ylukin/hai-proxy).
 
-To add an `hai` light to your installation, add the following to your `configuration.yaml` file:
+Here's an example of `hai` lights in `configuration.yaml` file:
 
 ```yaml
 light:
@@ -14,7 +14,7 @@ light:
         name: Family Room
 ```
 
-To add an `hai` zone to your installation, add the following to your `configuration.yaml` file: 
+Here's an example of `hai` zones in the `configuration.yaml` file: 
 
 ```yaml
 binary_sensor:
