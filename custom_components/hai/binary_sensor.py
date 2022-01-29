@@ -16,7 +16,7 @@ from homeassistant.components.binary_sensor import (
     DEVICE_CLASS_OCCUPANCY,
     DEVICE_CLASS_WINDOW,
     DEVICE_CLASSES_SCHEMA,
-    BinarySensorDevice,
+    BinarySensorEntity,
     PLATFORM_SCHEMA,
 )
 from homeassistant.const import CONF_HOST, CONF_ZONE, CONF_ID, CONF_NAME, CONF_DEVICE_CLASS
@@ -47,7 +47,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     # Add devices
     add_entities(HAIZone(zone, api_url) for zone in config[CONF_ZONE])
 
-class HAIZone(BinarySensorDevice):
+class HAIZone(BinarySensorEntity):
     """Representation of an HAI Zone."""
 
     def __init__(self, zone, api_url):

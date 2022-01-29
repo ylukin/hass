@@ -1,5 +1,5 @@
 {
-  "domain": "hai_light",
+  "domain": "hai",
   "name": "HAI Light",
   "documentation": "https://github.com/home-assistant/example-custom-config/tree/master/custom_components/example_light/",
   "dependencies": [],

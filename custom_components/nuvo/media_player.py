@@ -9,7 +9,7 @@ import re
 import voluptuous as vol
 
 from homeassistant.components.media_player import (
-    MediaPlayerDevice, PLATFORM_SCHEMA)
+    MediaPlayerEntity, PLATFORM_SCHEMA)
 from homeassistant.components.media_player.const import (
     DOMAIN, SUPPORT_SELECT_SOURCE,
     SUPPORT_TURN_OFF, SUPPORT_TURN_ON, SUPPORT_VOLUME_MUTE, SUPPORT_VOLUME_SET,
@@ -107,7 +107,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         DOMAIN, SERVICE_RESTORE, service_handle, schema=PLATFORM_SCHEMA)
 
 
-class NuvoZone(MediaPlayerDevice):
+class NuvoZone(MediaPlayerEntity):
     """Representation of a Nuvo E6G amplifier zone."""
 
     def __init__(self, itach_serial, sources, zone_id, zone_name):

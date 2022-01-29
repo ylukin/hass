@@ -9,7 +9,7 @@ import voluptuous as vol
 import homeassistant.helpers.config_validation as cv
 # Import the device class from the component that you want to support
 from homeassistant.components.light import (
-    ATTR_BRIGHTNESS, SUPPORT_BRIGHTNESS, PLATFORM_SCHEMA, Light)
+    ATTR_BRIGHTNESS, SUPPORT_BRIGHTNESS, PLATFORM_SCHEMA, LightEntity)
 from homeassistant.const import CONF_HOST, CONF_DEVICES, CONF_ID, CONF_NAME
 
 _LOGGER = logging.getLogger(__name__)
@@ -37,7 +37,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     # Add devices
     add_entities(HAILight(light, api_url) for light in config[CONF_DEVICES])
 
-class HAILight(Light):
+class HAILight(LightEntity):
     """Representation of an HAI Light."""
 
     def __init__(self, light, api_url):
