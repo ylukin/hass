@@ -9,7 +9,7 @@ import re
 import voluptuous as vol
 
 from homeassistant.components.media_player import (
-    MediaPlayerDevice, MEDIA_PLAYER_SCHEMA, PLATFORM_SCHEMA)
+    MediaPlayerDevice, PLATFORM_SCHEMA)
 from homeassistant.components.media_player.const import (
     DOMAIN, SUPPORT_SELECT_SOURCE,
     SUPPORT_TURN_OFF, SUPPORT_TURN_ON, SUPPORT_VOLUME_MUTE, SUPPORT_VOLUME_SET,
@@ -63,7 +63,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     
     port = config.get(CONF_PORT)
     hostname = config.get(CONF_HOST)
-    timeout = 1
+    timeout = 3
 
     from pyitachip2sl import ITachIP2SLSocketClient
     
@@ -101,10 +101,10 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                 device.restore()
 
     hass.services.register(
-        DOMAIN, SERVICE_SNAPSHOT, service_handle, schema=MEDIA_PLAYER_SCHEMA)
+        DOMAIN, SERVICE_SNAPSHOT, service_handle, schema=PLATFORM_SCHEMA)
 
     hass.services.register(
-        DOMAIN, SERVICE_RESTORE, service_handle, schema=MEDIA_PLAYER_SCHEMA)
+        DOMAIN, SERVICE_RESTORE, service_handle, schema=PLATFORM_SCHEMA)
 
 
 class NuvoZone(MediaPlayerDevice):
@@ -124,7 +124,7 @@ class NuvoZone(MediaPlayerDevice):
         self._name = zone_name
 
         self._snapshot = None
-        self._state = None
+        self._state = STATE_OFF
         self._volume = 0
         self._source = None
         self._mute = None
@@ -135,6 +135,7 @@ class NuvoZone(MediaPlayerDevice):
         response = self._nuvo.send_data(cmd, True)
         status = {}
         if response:
+            _LOGGER.error("Received response: " + str(response))
             if ("Z" + str(self._zone_id) + ",ON") in response:
                 status["power"] = True
                 try:

@@ -3,5 +3,6 @@
   "name": "HAI Light",
   "documentation": "https://github.com/home-assistant/example-custom-config/tree/master/custom_components/example_light/",
   "dependencies": [],
-  "codeowners": []
+  "codeowners": [],
+  "version": "0.1"
 }
