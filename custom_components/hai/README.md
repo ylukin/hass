@@ -1,7 +1,7 @@
 
 The `hai` platform allows you to control [HAI (Leviton) Omni home automation system](https://www.leviton.com/en/products/20a00-2) via [hai-proxy](https://github.com/ylukin/hai-proxy).
 
-Here's an example of `hai` lights in `configuration.yaml` file:
+Here's an example of `hai` lights and switches in `configuration.yaml` file:
 
 ```yaml
 light:
@@ -12,6 +12,12 @@ light:
         name: Living Room
       - id: 30
         name: Family Room
+switch:
+  - platform: hai
+    host: hai.mydomain.com
+    devices:
+      - id: 75
+        name: Closet Light Timer
 ```
 
 Here's an example of `hai` zones in the `configuration.yaml` file: 
