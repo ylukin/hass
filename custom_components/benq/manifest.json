@@ -1,0 +1,9 @@
+{
+  "domain": "benq",
+  "name": "BenQ component",
+  "documentation": "https://home-assistant.io",
+  "dependencies": [],
+  "codeowners": [],
+  "requirements": ["pyitachip2sl==0.1"],
+  "version": "0.1"
+}
