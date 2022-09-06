@@ -5,7 +5,7 @@ To add a BenQ device to your installation, add the following to your `configurat
 
 ```yaml
 # Example configuration.yaml entry
-media_player:
+switch:
   - platform: benq
     host: 192.168.1.100
     port: 4999
