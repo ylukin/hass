@@ -24,7 +24,7 @@ media_player:
         name: Guest Bedroom
     sources:
       1:
-        name: Sonos
+        name: TV
       2:
         name: Chromecast
 ```
