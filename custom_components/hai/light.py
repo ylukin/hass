@@ -9,7 +9,7 @@ import voluptuous as vol
 import homeassistant.helpers.config_validation as cv
 # Import the device class from the component that you want to support
 from homeassistant.components.light import (
-    ATTR_BRIGHTNESS, SUPPORT_BRIGHTNESS, PLATFORM_SCHEMA, LightEntity)
+    ATTR_BRIGHTNESS, PLATFORM_SCHEMA, LightEntity, LightEntityFeature, ColorMode)
 from homeassistant.const import CONF_HOST, CONF_DEVICES, CONF_ID, CONF_NAME
 
 _LOGGER = logging.getLogger(__name__)
@@ -21,6 +21,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
         {
             vol.Required(CONF_ID): cv.string,
             vol.Required(CONF_NAME): cv.string,
+            vol.Optional('is_dimmer', default=False): cv.boolean,
         }
     ]),
 })
@@ -47,6 +48,7 @@ class HAILight(LightEntity):
         self._state = False
         self._brightness = 0
         self._api_url = api_url
+        self._isDimmer = light.get('is_dimmer', False)
 
     @property
     def name(self):
@@ -68,9 +70,24 @@ class HAILight(LightEntity):
         return self._state
 
     @property
-    def supported_features(self):
+    def supported_features(self) -> LightEntityFeature: 
         """Flag supported features."""
-        return SUPPORT_BRIGHTNESS
+        if self._isDimmer:
+            return LightEntityFeature.TRANSITION
+        return LightEntityFeature(0)
+
+    @property
+    def supported_color_modes(self) -> set[str]:
+        """Flag supported color modes."""
+        return {self.color_mode}
+
+    @property
+    def color_mode(self) -> str:
+        """Return the color mode of the light."""
+        if self._isDimmer:
+            return ColorMode.BRIGHTNESS
+        return ColorMode.ONOFF
+
 
     def turn_on(self, **kwargs):
         """Instruct the light to turn on.

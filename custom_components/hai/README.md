@@ -10,6 +10,7 @@ light:
     devices:
       - id: 20
         name: Living Room
+        is_dimmer: true # defaults to False
       - id: 30
         name: Family Room
 switch:
