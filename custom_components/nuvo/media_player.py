@@ -11,9 +11,7 @@ import voluptuous as vol
 from homeassistant.components.media_player import (
     MediaPlayerEntity, PLATFORM_SCHEMA)
 from homeassistant.components.media_player.const import (
-    DOMAIN, SUPPORT_SELECT_SOURCE,
-    SUPPORT_TURN_OFF, SUPPORT_TURN_ON, SUPPORT_VOLUME_MUTE, SUPPORT_VOLUME_SET,
-    SUPPORT_VOLUME_STEP)
+    MediaPlayerEntityFeature, DOMAIN)
 from homeassistant.const import (
     ATTR_ENTITY_ID, CONF_NAME, CONF_PORT, CONF_HOST, STATE_OFF, STATE_ON)
 import homeassistant.helpers.config_validation as cv
@@ -22,9 +20,14 @@ REQUIREMENTS = ['pyitachip2sl==0.1']
 
 _LOGGER = logging.getLogger(__name__)
 
-SUPPORT_NUVO = SUPPORT_VOLUME_MUTE | SUPPORT_VOLUME_SET | \
-                    SUPPORT_VOLUME_STEP | SUPPORT_TURN_ON | \
-                    SUPPORT_TURN_OFF | SUPPORT_SELECT_SOURCE
+SUPPORT_NUVO = (
+    MediaPlayerEntityFeature.VOLUME_MUTE |
+    MediaPlayerEntityFeature.VOLUME_SET |
+    MediaPlayerEntityFeature.VOLUME_STEP |
+    MediaPlayerEntityFeature.TURN_ON |
+    MediaPlayerEntityFeature.TURN_OFF |
+    MediaPlayerEntityFeature.SELECT_SOURCE
+)
 
 ZONE_SCHEMA = vol.Schema({
     vol.Required(CONF_NAME): cv.string,
