@@ -149,12 +149,12 @@ class NuvoZone(MediaPlayerEntity):
             if ("Z" + str(self._zone_id) + ",ON") in response:
                 status["power"] = True
                 try:
-                    status["volume"] = re.search("(VOL)(\d+)",response).group(2)
+                    status["volume"] = re.search(r"(VOL)(\d+)",response).group(2)
                 except:
                     status["volume"] = 0
                     status["mute"] = True
                     _LOGGER.error("Failed to parse volume from response: %s", response)
-                status["source"] = re.search("(SRC)(\d+)",response).group(2)
+                status["source"] = re.search(r"(SRC)(\d+)",response).group(2)
                 status["mute"] = False
                 return status
             elif ("Z" + str(self._zone_id) + ",OFF") in response:
