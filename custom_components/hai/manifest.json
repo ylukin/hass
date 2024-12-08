@@ -1,8 +1,8 @@
 {
   "domain": "hai",
   "name": "HAI Light",
-  "documentation": "https://github.com/home-assistant/example-custom-config/tree/master/custom_components/example_light/",
+  "documentation": "https://home-assistant.io",
   "dependencies": [],
   "codeowners": [],
-  "version": "0.1"
+  "version": "0.2"
 }
