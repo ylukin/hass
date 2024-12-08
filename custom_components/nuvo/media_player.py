@@ -141,6 +141,11 @@ class NuvoZone(MediaPlayerEntity):
             # Use debug level for normal status messages
             _LOGGER.debug("Received response: %s", response)
 
+            # Handle ALLOFF response
+            if "#ALLOFF" in response:
+                status["power"] = False
+                return status
+
             if ("Z" + str(self._zone_id) + ",ON") in response:
                 status["power"] = True
                 try:
