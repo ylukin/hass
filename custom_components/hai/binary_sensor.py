@@ -10,11 +10,7 @@ import homeassistant.helpers.config_validation as cv
 # Import the device class from the component that you want to support
 # Full list https://github.com/home-assistant/core/blob/dev/homeassistant/components/binary_sensor/__init__.pys
 from homeassistant.components.binary_sensor import (
-    DEVICE_CLASS_DOOR,
-    DEVICE_CLASS_GARAGE_DOOR,
-    DEVICE_CLASS_MOISTURE,
-    DEVICE_CLASS_OCCUPANCY,
-    DEVICE_CLASS_WINDOW,
+    BinarySensorDeviceClass,
     DEVICE_CLASSES_SCHEMA,
     BinarySensorEntity,
     PLATFORM_SCHEMA,
