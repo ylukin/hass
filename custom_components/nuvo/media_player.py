@@ -138,7 +138,9 @@ class NuvoZone(MediaPlayerEntity):
         response = self._nuvo.send_data(cmd, True)
         status = {}
         if response:
-            _LOGGER.error("Received response: " + str(response))
+            # Use debug level for normal status messages
+            _LOGGER.debug("Received response: %s", response)
+
             if ("Z" + str(self._zone_id) + ",ON") in response:
                 status["power"] = True
                 try:
@@ -146,20 +148,27 @@ class NuvoZone(MediaPlayerEntity):
                 except:
                     status["volume"] = 0
                     status["mute"] = True
+                    _LOGGER.error("Failed to parse volume from response: %s", response)
                 status["source"] = re.search("(SRC)(\d+)",response).group(2)
                 status["mute"] = False
                 return status
             elif ("Z" + str(self._zone_id) + ",OFF") in response:
                 status["power"] = False
                 return status
+            else:
+                # Log unexpected responses with error level
+                _LOGGER.error("Unexpected response format: %s", response)
+                return None
         else:
+            # Log communication failures with error level
+            _LOGGER.error("No response received for zone %s", self._zone_id)
             return None
 
     def update(self):
         """Update zone state in Home Assistant."""
         state = self.zone_status()
         if not state:
-            _LOGGER.error("Unable to update state for Zone ID: " + str(self._zone_id))
+            _LOGGER.error("Unable to update state for Zone ID: %s", self._zone_id)
             return False
         self._state = STATE_ON if state["power"] else STATE_OFF
         if self._state == STATE_ON:
@@ -169,6 +178,7 @@ class NuvoZone(MediaPlayerEntity):
             if idx in self._source_id_name:
                 self._source = self._source_id_name[idx]
             else:
+                _LOGGER.error("Invalid source index: %s", idx)
                 self._source = None
         return True
 
