@@ -34,7 +34,7 @@ This integration is configured via the Home Assistant UI.
 ### Configuration Options
 
 - **host** (required): The IP address of the Global Cache IP2SL gateway device to which the Nuvo amplifier is connected
-- **port** (required): The TCP port on the Global Cache IP2SL gateway to send serial commands to. Since the IP2SL only has one serial port, use 4999
+- **port** (required): The TCP port on the Global Cache IP2SL gateway to send serial commands to.
 - **zones**: Names for zones 1-6. Each zone you configure will appear as a separate media player entity
 - **sources**: Names for sources 1-6. Each source number corresponds to the input number on the Nuvo amplifier
 
