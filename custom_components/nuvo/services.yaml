@@ -1,0 +1,15 @@
+snapshot:
+  name: Snapshot
+  description: Save the current state of one or more Nuvo zones for later restoration.
+  target:
+    entity:
+      integration: nuvo
+      domain: media_player
+
+restore:
+  name: Restore
+  description: Restore a previously saved state of one or more Nuvo zones.
+  target:
+    entity:
+      integration: nuvo
+      domain: media_player

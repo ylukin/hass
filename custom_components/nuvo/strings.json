@@ -1,0 +1,101 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Nuvo E6G Amplifier",
+        "description": "Configure your Nuvo Essentia E6G multi-zone amplifier. Connect via Global Cache iTach IP2SL gateway.",
+        "data": {
+          "name": "Device Name",
+          "host": "Host IP Address",
+          "port": "Port",
+          "zone_1": "Zone 1 Name",
+          "zone_2": "Zone 2 Name",
+          "zone_3": "Zone 3 Name",
+          "zone_4": "Zone 4 Name",
+          "zone_5": "Zone 5 Name",
+          "zone_6": "Zone 6 Name",
+          "source_1": "Source 1 Name",
+          "source_2": "Source 2 Name",
+          "source_3": "Source 3 Name",
+          "source_4": "Source 4 Name",
+          "source_5": "Source 5 Name",
+          "source_6": "Source 6 Name"
+        },
+        "data_description": {
+          "name": "Custom name for this amplifier (e.g., 'My Primary E6G')",
+          "host": "IP address of the iTach IP2SL gateway",
+          "port": "Port number of the iTach IP2SL gateway",
+          "zone_1": "Name for Zone 1 (leave blank if not used)",
+          "zone_2": "Name for Zone 2 (leave blank if not used)",
+          "zone_3": "Name for Zone 3 (leave blank if not used)",
+          "zone_4": "Name for Zone 4 (leave blank if not used)",
+          "zone_5": "Name for Zone 5 (leave blank if not used)",
+          "zone_6": "Name for Zone 6 (leave blank if not used)",
+          "source_1": "Name for Source 1 (leave blank if not used)",
+          "source_2": "Name for Source 2 (leave blank if not used)",
+          "source_3": "Name for Source 3 (leave blank if not used)",
+          "source_4": "Name for Source 4 (leave blank if not used)",
+          "source_5": "Name for Source 5 (leave blank if not used)",
+          "source_6": "Name for Source 6 (leave blank if not used)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to the iTach IP2SL gateway. Check host and port.",
+      "not_nuvo": "Device did not identify as a Nuvo E6G amplifier.",
+      "unknown": "Unexpected error occurred."
+    },
+    "abort": {
+      "already_configured": "This device is already configured.",
+      "cannot_connect": "Failed to connect during YAML import."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configure Nuvo Amplifier",
+        "description": "Update device name, zone names, and source names. Changes will take effect after saving.",
+        "data": {
+          "name": "Device Name",
+          "zone_1": "Zone 1 Name",
+          "zone_2": "Zone 2 Name",
+          "zone_3": "Zone 3 Name",
+          "zone_4": "Zone 4 Name",
+          "zone_5": "Zone 5 Name",
+          "zone_6": "Zone 6 Name",
+          "source_1": "Source 1 Name",
+          "source_2": "Source 2 Name",
+          "source_3": "Source 3 Name",
+          "source_4": "Source 4 Name",
+          "source_5": "Source 5 Name",
+          "source_6": "Source 6 Name"
+        },
+        "data_description": {
+          "name": "Custom name for this amplifier",
+          "zone_1": "Name for Zone 1 (leave blank to disable)",
+          "zone_2": "Name for Zone 2 (leave blank to disable)",
+          "zone_3": "Name for Zone 3 (leave blank to disable)",
+          "zone_4": "Name for Zone 4 (leave blank to disable)",
+          "zone_5": "Name for Zone 5 (leave blank to disable)",
+          "zone_6": "Name for Zone 6 (leave blank to disable)",
+          "source_1": "Name for Source 1 (leave blank if not used)",
+          "source_2": "Name for Source 2 (leave blank if not used)",
+          "source_3": "Name for Source 3 (leave blank if not used)",
+          "source_4": "Name for Source 4 (leave blank if not used)",
+          "source_5": "Name for Source 5 (leave blank if not used)",
+          "source_6": "Name for Source 6 (leave blank if not used)"
+        }
+      }
+    }
+  },
+  "services": {
+    "snapshot": {
+      "name": "Snapshot",
+      "description": "Save the current state of one or more Nuvo zones for later restoration."
+    },
+    "restore": {
+      "name": "Restore",
+      "description": "Restore a previously saved state of one or more Nuvo zones."
+    }
+  }
+}

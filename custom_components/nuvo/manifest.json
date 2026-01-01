@@ -1,9 +1,11 @@
 {
   "domain": "nuvo",
-  "name": "Nuvo component",
-  "documentation": "https://home-assistant.io",
-  "dependencies": [],
+  "name": "Nuvo Multi-Zone Amplifier",
   "codeowners": [],
+  "config_flow": true,
+  "documentation": "https://www.home-assistant.io/integrations/nuvo",
+  "integration_type": "device",
+  "iot_class": "local_polling",
   "requirements": ["pyitachip2sl==0.1"],
-  "version": "0.2"
+  "version": "1.0.0"
 }
