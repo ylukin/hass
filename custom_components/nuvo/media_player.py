@@ -155,10 +155,79 @@ class NuvoZone(MediaPlayerEntity):
         # Snapshot storage
         self._snapshot = None
 
+        # Store connection params for reconnection
+        self._host = config_entry.data[CONF_HOST]
+        self._port = config_entry.data[CONF_PORT]
+        self._reconnect_attempts = 0
+        self._max_reconnect_attempts = 3
+
+    def _check_and_reconnect(self) -> bool:
+        """Check if connection is alive and reconnect if needed."""
+        import socket
+        from pyitachip2sl import ITachIP2SLSocketClient
+
+        try:
+            # Check if socket is still valid
+            sock = self._connection.socket
+            fileno = sock.fileno()
+
+            # Socket with fileno of -1 is closed
+            if fileno == -1:
+                _LOGGER.warning("Zone %s: Socket is closed (fileno=-1), attempting reconnect", self._zone_id)
+                raise socket.error("Socket closed")
+
+            # If we get here, socket appears valid
+            return True
+
+        except (AttributeError, socket.error, OSError) as err:
+            _LOGGER.warning(
+                "Zone %s: Connection appears broken (%s), attempting reconnect (attempt %s/%s)",
+                self._zone_id,
+                err,
+                self._reconnect_attempts + 1,
+                self._max_reconnect_attempts
+            )
+
+            # Attempt to reconnect
+            if self._reconnect_attempts < self._max_reconnect_attempts:
+                self._reconnect_attempts += 1
+                try:
+                    # Create new connection
+                    self._connection = ITachIP2SLSocketClient(self._host, self._port, timeout=3)
+                    _LOGGER.info(
+                        "Zone %s: Successfully reconnected to %s:%s",
+                        self._zone_id,
+                        self._host,
+                        self._port
+                    )
+                    self._reconnect_attempts = 0  # Reset counter on success
+                    return True
+                except Exception as reconnect_err:
+                    _LOGGER.error(
+                        "Zone %s: Failed to reconnect: %s",
+                        self._zone_id,
+                        reconnect_err
+                    )
+                    return False
+            else:
+                _LOGGER.error(
+                    "Zone %s: Max reconnect attempts (%s) reached",
+                    self._zone_id,
+                    self._max_reconnect_attempts
+                )
+                return False
+
     def _zone_status(self) -> dict[str, Any] | None:
         """Retrieve zone status from Nuvo amplifier (synchronous)."""
         # Add delay to prevent buffer overruns (protocol requires 50ms between commands)
         import time
+        import socket
+
+        # Check connection health and reconnect if needed
+        if not self._check_and_reconnect():
+            _LOGGER.error("Zone %s: Unable to establish connection", self._zone_id)
+            return None
+
         time.sleep(0.1)  # 100ms delay to be safe
 
         cmd_text = f"*Z{self._zone_id}STATUS?\r"
@@ -166,14 +235,66 @@ class NuvoZone(MediaPlayerEntity):
 
         _LOGGER.debug("Zone %s: Sending command: %s (hex: %s)", self._zone_id, repr(cmd_text), cmd)
 
+        # Diagnostic: Check socket state before sending
+        try:
+            sock = self._connection.socket
+            _LOGGER.debug(
+                "Zone %s: Socket state - timeout: %s, fileno: %s",
+                self._zone_id,
+                sock.gettimeout(),
+                sock.fileno() if hasattr(sock, 'fileno') else 'N/A'
+            )
+        except Exception as diag_err:
+            _LOGGER.warning("Zone %s: Unable to check socket state: %s", self._zone_id, diag_err)
+
         # Send query twice - first response may be stale from buffer
-        response1 = self._connection.send_data(cmd, True)
-        _LOGGER.debug("Zone %s: First response (may be stale): %r", self._zone_id, response1)
+        try:
+            response1 = self._connection.send_data(cmd, True)
+            _LOGGER.debug("Zone %s: First response (may be stale): %r", self._zone_id, response1)
+        except (socket.error, OSError) as err:
+            _LOGGER.error(
+                "Zone %s: Socket error on first query - errno: %s, error: %s, type: %s",
+                self._zone_id,
+                getattr(err, 'errno', 'N/A'),
+                err,
+                type(err).__name__
+            )
+            # Try to reconnect and retry once
+            _LOGGER.info("Zone %s: Attempting reconnect after error", self._zone_id)
+            if self._check_and_reconnect():
+                try:
+                    response1 = self._connection.send_data(cmd, True)
+                    _LOGGER.info("Zone %s: Retry successful after reconnect", self._zone_id)
+                except (socket.error, OSError) as retry_err:
+                    _LOGGER.error("Zone %s: Retry failed: %s", self._zone_id, retry_err)
+                    return None
+            else:
+                return None
 
         time.sleep(0.05)  # Small delay between queries
 
-        response2 = self._connection.send_data(cmd, True)
-        _LOGGER.debug("Zone %s: Second response (fresh): %r", self._zone_id, response2)
+        try:
+            response2 = self._connection.send_data(cmd, True)
+            _LOGGER.debug("Zone %s: Second response (fresh): %r", self._zone_id, response2)
+        except (socket.error, OSError) as err:
+            _LOGGER.error(
+                "Zone %s: Socket error on second query - errno: %s, error: %s, type: %s",
+                self._zone_id,
+                getattr(err, 'errno', 'N/A'),
+                err,
+                type(err).__name__
+            )
+            # Try to reconnect and retry once
+            _LOGGER.info("Zone %s: Attempting reconnect after error", self._zone_id)
+            if self._check_and_reconnect():
+                try:
+                    response2 = self._connection.send_data(cmd, True)
+                    _LOGGER.info("Zone %s: Retry successful after reconnect", self._zone_id)
+                except (socket.error, OSError) as retry_err:
+                    _LOGGER.error("Zone %s: Retry failed: %s", self._zone_id, retry_err)
+                    return None
+            else:
+                return None
 
         # Use the second response
         response = response2
@@ -312,13 +433,33 @@ class NuvoZone(MediaPlayerEntity):
 
     async def async_turn_on(self) -> None:
         """Turn the zone on."""
+        import socket
         cmd = codecs.encode(f"*Z{self._zone_id}ON\r".encode(), "hex").decode()
-        await self.hass.async_add_executor_job(self._connection.send_data, cmd, True)
+        try:
+            await self.hass.async_add_executor_job(self._connection.send_data, cmd, True)
+        except (socket.error, OSError) as err:
+            _LOGGER.error(
+                "Zone %s: Socket error turning on - errno: %s, error: %s",
+                self._zone_id,
+                getattr(err, 'errno', 'N/A'),
+                err
+            )
+            raise
 
     async def async_turn_off(self) -> None:
         """Turn the zone off."""
+        import socket
         cmd = codecs.encode(f"*Z{self._zone_id}OFF\r".encode(), "hex").decode()
-        await self.hass.async_add_executor_job(self._connection.send_data, cmd, True)
+        try:
+            await self.hass.async_add_executor_job(self._connection.send_data, cmd, True)
+        except (socket.error, OSError) as err:
+            _LOGGER.error(
+                "Zone %s: Socket error turning off - errno: %s, error: %s",
+                self._zone_id,
+                getattr(err, 'errno', 'N/A'),
+                err
+            )
+            raise
 
     async def async_mute_volume(self, mute: bool) -> None:
         """Mute (true) or unmute (false) the zone."""
